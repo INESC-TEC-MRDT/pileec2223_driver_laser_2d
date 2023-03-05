@@ -145,8 +145,8 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
   laser2base_tf.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
   laser2base_tf.setRotation(tf::createQuaternionFromYaw(0.0));
   laser2base_tf.stamp_ = msg.header.stamp;
-  laser2base_tf.frame_id_ = laser_frame_id_;
-  laser2base_tf.child_frame_id_ = base_frame_id_;
+  laser2base_tf.frame_id_ = base_frame_id_;
+  laser2base_tf.child_frame_id_ = laser_frame_id_;
   tf_broad_.sendTransform(laser2base_tf);
 
   pub_laser_.publish(msg);

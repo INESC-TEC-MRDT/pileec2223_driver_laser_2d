@@ -53,6 +53,9 @@ velocity in the odometric coordinate frame.
 - angle_max (`float`): maximum angle range (deg, `[-180.0, 180.0[`)
   - **Note:** if a minimum or a maximum value is set, both limits must be
     defined!
+
+**correct_laser_data**
+
 - TBC
 - \<name\> (`<type> = <default value>`): \<description\> (\<units\>)
 

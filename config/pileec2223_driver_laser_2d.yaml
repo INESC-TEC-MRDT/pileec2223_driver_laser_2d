@@ -1,1 +1,3 @@
 # Put here the parameters to set in your node
+base_frame_id: $(arg robot_id)/base_footprint
+laser_frame_id: $(arg robot_id)/laser
