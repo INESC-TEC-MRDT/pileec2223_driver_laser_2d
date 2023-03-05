@@ -111,8 +111,16 @@ roslaunch pileec2223_driver_laser_2d no_correction_RPLIDARS2.launch
 
 **correct_laser_data**
 
+_[YDLIDAR X4](https://www.ydlidar.com/products/view/5.html)_
+
 ```sh
-roslaunch pileec2223_driver_laser_2d correct_laser_data.launch
+roslaunch pileec2223_driver_laser_2d correct_laser_data_YDLIDARX4.launch
+```
+
+_[RPLIDAR S2](https://www.slamtec.com/en/S2)_
+
+```sh
+roslaunch pileec2223_driver_laser_2d correct_laser_data_RPLIDARS2.launch
 ```
 
 ## Contacts
