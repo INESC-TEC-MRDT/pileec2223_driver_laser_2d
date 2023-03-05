@@ -1,0 +1,7 @@
+model: "rplidars2"
+serial_port_name: "/dev/ttyUSB0"
+baud_rate: 1000000
+base_frame_id: "base_footprint"
+laser_frame_id: "laser"
+dist_min: 0.05
+dist_max: 30.0
