@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <ros/ros.h>
+#include <nav_msgs/Odometry.h>
 #include <sensor_msgs/PointCloud.h>
 #include <tf/transform_broadcaster.h>
 
@@ -15,6 +16,7 @@ class SdpoDriverLaser2DROSCorrectData {
   ros::NodeHandle nh;
 
   ros::Publisher pub_laser_;
+  ros::Subscriber sub_odom_;
   tf::TransformBroadcaster tf_broad_;
 
   ros::Time sample_time_;
@@ -40,6 +42,7 @@ class SdpoDriverLaser2DROSCorrectData {
  private:
   void readParam();
   void pubLaserData();
+  void subOdom(const nav_msgs::Odometry& msg_odom);
 };
 
 } // namespace pileec2223_driver_laser_2d

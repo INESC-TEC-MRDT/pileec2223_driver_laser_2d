@@ -23,6 +23,8 @@ SdpoDriverLaser2DROSCorrectData::SdpoDriverLaser2DROSCorrectData() {
 
   pub_laser_ = nh.advertise<sensor_msgs::PointCloud>(
       "laser_scan_point_cloud", 1);
+  sub_odom_ = nh.subscribe("odom", 1,
+                           &SdpoDriverLaser2DROSCorrectData::subOdom, this);
 }
 
 void SdpoDriverLaser2DROSCorrectData::start() {
@@ -148,6 +150,16 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
   tf_broad_.sendTransform(laser2base_tf);
 
   pub_laser_.publish(msg);
+}
+
+void SdpoDriverLaser2DROSCorrectData::subOdom(const nav_msgs::Odometry& msg_odom) {
+  // Process odom message (remove example debug message)
+  ROS_INFO("[pileec2223_driver_laser_2d] Odom: %f m %f m (%f deg)",
+           msg_odom.pose.pose.position.x, msg_odom.pose.pose.position.y,
+           tf::getYaw(msg_odom.pose.pose.orientation) * 180.0 / M_PI);
+
+  // Need to use later the oodometry velocity data for correcting laser data
+  // Note: odom and laser are asynchronous from each other!!!!
 }
 
 } // namespace pileec2223_driver_laser_2d
