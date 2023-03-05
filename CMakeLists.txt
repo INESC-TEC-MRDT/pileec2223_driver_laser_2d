@@ -147,6 +147,11 @@ add_executable(no_correction
   ${PROGRAM_HEADERS}
   src/main.cpp
 )
+add_executable(correct_laser_data
+  ${PROGRAM_SOURCES}
+  ${PROGRAM_HEADERS}
+  src/main_correct_data.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -160,6 +165,9 @@ add_executable(no_correction
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(no_correction
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(correct_laser_data
   ${catkin_LIBRARIES}
 )
 
