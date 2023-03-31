@@ -26,6 +26,12 @@ class SdpoDriverLaser2DROS {
   int baud_rate_;
   std::string base_frame_id_;
   std::string laser_frame_id_;
+  float laser_pose_x_;
+  float laser_pose_y_;
+  float laser_pose_z_;
+  float laser_pose_yaw_;
+  float laser_pose_pitch_;
+  float laser_pose_roll_;
   float dist_min_;
   float dist_max_;
   float ang_min_;

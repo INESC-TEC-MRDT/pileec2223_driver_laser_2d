@@ -79,6 +79,29 @@ void SdpoDriverLaser2DROS::readParam() {
   ROS_INFO("[pileec2223_driver_laser_2d] Laser frame ID: %s",
            laser_frame_id_.c_str());
 
+  print_is_default_param_set("laser_pose_x");
+  print_is_default_param_set("laser_pose_y");
+  print_is_default_param_set("laser_pose_z");
+  print_is_default_param_set("laser_pose_yaw");
+  print_is_default_param_set("laser_pose_pitch");
+  print_is_default_param_set("laser_pose_roll");
+
+  nh_private.param<float>("laser_pose_x", laser_pose_x_, 0.0);
+  nh_private.param<float>("laser_pose_y", laser_pose_y_, 0.0);
+  nh_private.param<float>("laser_pose_z", laser_pose_z_, 0.0);
+  nh_private.param<float>("laser_pose_yaw", laser_pose_yaw_, 0.0);
+  nh_private.param<float>("laser_pose_pitch", laser_pose_pitch_, 0.0);
+  nh_private.param<float>("laser_pose_roll", laser_pose_roll_, 0.0);
+
+  ROS_INFO("[pileec2223_driver_laser_2d] Laser > Base footprint: "
+           "[%f, %f, %f] m , [%f %f %f] deg",
+           laser_pose_x_, laser_pose_y_, laser_pose_z_,
+           laser_pose_yaw_, laser_pose_pitch_, laser_pose_roll_);
+
+  laser_pose_yaw_ *= M_PIf32 / 180.0f;
+  laser_pose_pitch_ *= M_PIf32 / 180.0f;
+  laser_pose_roll_ *= M_PIf32 / 180.0f;
+
   if(nh_private.hasParam("dist_min") && nh_private.hasParam("dist_max")) {
     nh_private.getParam("dist_min", dist_min_);
     nh_private.getParam("dist_max", dist_max_);
@@ -133,11 +156,13 @@ void SdpoDriverLaser2DROS::pubLaserData() {
   }
 
   tf::StampedTransform laser2base_tf;
-  laser2base_tf.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
-  laser2base_tf.setRotation(tf::createQuaternionFromYaw(0.0));
+  laser2base_tf.setOrigin(tf::Vector3(
+      laser_pose_x_, laser_pose_y_, laser_pose_z_));
+  laser2base_tf.setRotation(tf::createQuaternionFromRPY(
+      laser_pose_roll_, laser_pose_pitch_, laser_pose_yaw_));
   laser2base_tf.stamp_ = msg.header.stamp;
-  laser2base_tf.frame_id_ = laser_frame_id_;
-  laser2base_tf.child_frame_id_ = base_frame_id_;
+  laser2base_tf.frame_id_ = base_frame_id_;
+  laser2base_tf.child_frame_id_ = laser_frame_id_;
   tf_broad_.sendTransform(laser2base_tf);
 
   pub_laser_.publish(msg);
