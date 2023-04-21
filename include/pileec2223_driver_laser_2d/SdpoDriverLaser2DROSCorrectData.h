@@ -33,6 +33,14 @@ class SdpoDriverLaser2DROSCorrectData {
   float ang_min_;
   float ang_max_;
 
+
+  float x;//
+  float y;//
+  float theta;//
+  float vx;
+  float vy;
+  float vw;
+
  public:
   SdpoDriverLaser2DROSCorrectData();
   ~SdpoDriverLaser2DROSCorrectData() = default;
@@ -43,6 +51,7 @@ class SdpoDriverLaser2DROSCorrectData {
   void readParam();
   void pubLaserData();
   void subOdom(const nav_msgs::Odometry& msg_odom);
+  void reset();
 };
 
 } // namespace pileec2223_driver_laser_2d

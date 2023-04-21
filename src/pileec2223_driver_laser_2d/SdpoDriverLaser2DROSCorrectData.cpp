@@ -133,12 +133,42 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
   msg.header.frame_id = laser_frame_id_;
   msg.header.stamp = ros::Time::now();
   msg.points.resize(laser_->data_count);
+
+  float x_ini;
+  float y_ini;
+  float deltax;
+  float deltay;
+  float deltatheta;
+  float deltat=1/360/8;
+
+
   for(size_t i = 0; i < laser_->data_count; i++) {
+
+    deltax=vx*deltat;
+    deltay=vy*deltat;
+    deltatheta=vw*deltat;
+
+    if(deltatheta==0){
+      x=x+deltax*cos(theta)-deltay*sin(theta);
+      y=y+deltax*sin(theta)+deltay*cos(theta);
+    }else{
+      x = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (cos(theta + deltatheta / 2) / deltatheta) - (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (sin(theta + deltatheta / 2) / deltatheta);
+      y = y + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (sin(theta + deltatheta / 2) / deltatheta) + (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (cos(theta + deltatheta / 2) / deltatheta);
+    }
+    theta=theta+deltatheta;
+
     msg.points.at(i).x =
         laser_->dist_data[i] * cos(laser_->ang_data[i]);
     msg.points.at(i).y =
         laser_->dist_data[i] * sin(laser_->ang_data[i]);
     msg.points.at(i).z = 0;
+
+    x_ini=msg.points.at(i).x;//
+    y_ini=msg.points.at(i).y;
+
+    msg.points.at(i).x = cos(theta) * x_ini - sin(theta) * y_ini + x;//
+    msg.points.at(i).y = sin(theta) * x_ini + cos(theta) * y_ini + y;//
+
   }
 
   tf::StampedTransform laser2base_tf;
@@ -158,8 +188,19 @@ void SdpoDriverLaser2DROSCorrectData::subOdom(const nav_msgs::Odometry& msg_odom
            msg_odom.pose.pose.position.x, msg_odom.pose.pose.position.y,
            tf::getYaw(msg_odom.pose.pose.orientation) * 180.0 / M_PI);
 
+    vx = msg_odom.twist.twist.linear.x;
+    vy = msg_odom.twist.twist.linear.y;
+    vw = msg_odom.twist.twist.angular.z;
+        
+  
   // Need to use later the oodometry velocity data for correcting laser data
   // Note: odom and laser are asynchronous from each other!!!!
+}
+
+void SdpoDriverLaser2DROSCorrectData::reset() {
+  x=0;
+  y=0;
+  theta=0;
 }
 
 } // namespace pileec2223_driver_laser_2d
