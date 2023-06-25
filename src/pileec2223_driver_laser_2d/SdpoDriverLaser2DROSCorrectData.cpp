@@ -140,7 +140,9 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
   float deltax=0;
   float deltay=0;
   float deltatheta=0;
-  //float theta=0;
+  float theta=0;
+  float x = 0;
+  float y = 0;
   float deltat=0.000347222;
 
   for(size_t i = 0; i < laser_->data_count; i++) {
@@ -149,33 +151,13 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
     deltay = vy * deltat;
     deltatheta = vw * deltat;
   
-    //ROS_INFO("-------------------------");
-    //ROS_INFO("delta Y: %f\n",deltay);
-    //ROS_INFO("delta X: %f\n",deltax);
-    //ROS_INFO("delta theta: %f\n",deltatheta);
-    //ROS_INFO("theta: %f\n",theta);
-    //ROS_INFO("x: %f\n",x);
-    //ROS_INFO("y: %f\n",y);
-    //ROS_INFO("vy: %f\n",vy);
-    //ROS_INFO("vx: %f\n",vx);
-    //ROS_INFO("vw: %f\n",vw);
-    //ROS_INFO("-------------------------");
-    
     if(abs(deltatheta) < 0,00003){
-      //x = x + deltax * cos(deltatheta) - deltay * sin(deltatheta);
-      //y = x + deltax * sin(deltatheta) + deltay * cos(deltatheta);
-      x=deltax;
-      y=deltay;
+      x = x + deltax * cos(deltatheta) - deltay * sin(deltatheta);
+      y = x + deltax * sin(deltatheta) + deltay * cos(deltatheta);
     }else{
-      //x = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (cos(theta + deltatheta / 2) / deltatheta) - (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (sin(theta + deltatheta / 2) / deltatheta);
-      //y = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (sin(theta + deltatheta / 2) / deltatheta) + (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (cos(theta + deltatheta / 2) / deltatheta);
-      x = (deltax * sin(deltatheta) + deltay * (cos(deltatheta) - 1)) * (cos(deltatheta / 2) / deltatheta) - (deltax * (1 - cos(deltatheta)) + deltay * sin(deltatheta)) * (sin(deltatheta / 2) / deltatheta);
-      y = (deltax * sin(deltatheta) + deltay * (cos(deltatheta) - 1)) * (sin(deltatheta / 2) / deltatheta) + (deltax * (1 - cos(deltatheta)) + deltay * sin(deltatheta)) * (cos(deltatheta / 2) / deltatheta);
-    }
-    //theta=theta+deltatheta;
-    //ROS_INFO("theta: %f\n",theta);
-    //ROS_INFO("x: %f\n",x);
-    //ROS_INFO("y: %f\n",y);
+      x = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (cos(theta + deltatheta / 2) / deltatheta) - (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (sin(theta + deltatheta / 2) / deltatheta);
+      y = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (sin(theta + deltatheta / 2) / deltatheta) + (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (cos(theta + deltatheta / 2) / deltatheta);
+     }
 
     msg.points.at(i).x =
         laser_->dist_data[i] * cos(laser_->ang_data[i]);
@@ -186,8 +168,8 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
     x_ini=msg.points.at(i).x;
     y_ini=msg.points.at(i).y;
 
-    msg.points.at(i).x = cos(deltatheta) * x_ini - sin(deltatheta) * y_ini + x;//
-    msg.points.at(i).y = sin(deltatheta) * x_ini + cos(deltatheta) * y_ini + y;//
+    msg.points.at(i).x = cos(deltatheta) * x_ini - sin(deltatheta) * y_ini + x;
+    msg.points.at(i).y = sin(deltatheta) * x_ini + cos(deltatheta) * y_ini + y;
     
   }
 
