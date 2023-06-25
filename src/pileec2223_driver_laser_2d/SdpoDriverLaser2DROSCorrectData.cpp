@@ -158,6 +158,8 @@ void SdpoDriverLaser2DROSCorrectData::pubLaserData() {
       x = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (cos(theta + deltatheta / 2) / deltatheta) - (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (sin(theta + deltatheta / 2) / deltatheta);
       y = x + (deltax * sin(theta + deltatheta) + deltay * (cos(theta + deltatheta) - 1)) * (sin(theta + deltatheta / 2) / deltatheta) + (deltax * (1 - cos(theta + deltatheta)) + deltay * sin(theta + deltatheta)) * (cos(theta + deltatheta / 2) / deltatheta);
      }
+    
+    theta=theta+deltatheta;
 
     msg.points.at(i).x =
         laser_->dist_data[i] * cos(laser_->ang_data[i]);
